@@ -1,0 +1,121 @@
+reset;
+model Model3.mod;
+data dat/Model3.dat;
+data dat/cov_matrix.dat;
+data dat/ZID.dat;
+data dat/WPSS.dat;
+data dat/CF.dat;
+data dat/DistNW.dat;
+
+
+
+option solver gurobi;
+option gurobi_options 'MIPFocus=1 TimeLimit=30 logfile=model_3_log';
+
+
+
+#################################################################
+# In the baseline scenario we do not limit the number of locations
+# and the minimum or maximum weight
+# we use this scenario to fix the utopia and nadir points for normalization
+#################################################################
+drop maxfarms;
+drop {z in Z} minweight[z];
+drop {z in Z} maxweight[z];
+
+# first solve MVP objective: obtain utopia point for MVP and nadir point for MCF
+objective MVP;
+solve;
+# save the optimal MVP (utopia point) in a parameter
+# This is from minimizing just objective MVP
+let pMVP := MVP;
+let pMCF_max := MCF;
+
+display w;
+display pMCF_max;
+
+
+
+
+# Now solve MCF objective: obtain utopia point for MCF and nadir point for MVP
+objective MCF;
+solve;
+# save the optimum MCF (utopia point) in a parameter
+# This is from minimizing just MCF alone
+let pMCF := MCF;
+let pMVP_max := MVP;
+display w;
+display pMVP_max;
+
+for {i in C} {
+	if (c[i] = 1) then {
+		print "Cell " & i & " selected weight = " & v[i];
+	}
+};
+
+for {z in Z} {
+	if (u[z] = 1) then {
+		print "Zone " & z & " selected weight = " & w[z];
+	}
+};
+
+
+print "solved";
+
+
+
+#################################################################
+# Now solve the bi-objective model with the constraints
+# Using the utopia and nadir points obtained earlier for normalization
+# we fix the utopia and nadir points and change the model constraints
+#################################################################
+restore maxfarms;
+restore {z in Z} minweight;
+restore {z in Z} maxweight;
+
+param MeanVariance;
+param MeanSD;
+param MeanCF;
+
+param weight_steps := 0.25;
+param n_iterations := (1 / weight_steps) - 1;
+
+
+redeclare subject to maxfarms: sum{z in Z}u[z] <= maxLoc;
+
+print "maxfarms, p, MeanVariance, MeanSD, MeanCF, BiObj" > out/model_3_out_pareto.csv;
+print "maxfarms, p, zone, weight_z, cell, weight_c" > out/model_3_out_weights.csv;
+
+for {n in N} {
+	print "";
+	print "Solving for maxfarms = " & MaxLocs[n];
+	
+	let maxLoc := MaxLocs[n];
+	
+	for {p in 1 .. n_iterations} {
+		let wMVP := p * weight_steps;
+	
+		objective BiObj;
+		solve;
+		
+		# Display results
+		let MeanVariance := sum{z in Z, y in Z} COV[z, y] * w[z] * w[y];
+		let MeanSD := sqrt(MeanVariance);
+		let MeanCF := sum{i in C}v[i] * CF[i];
+		
+		print maxLoc & ", " & wMVP & ", " & MeanVariance & ", " & MeanSD & ", " & MeanCF & ", " & BiObj > out/model_3_out_pareto.csv;
+	
+		for {i in C} {
+			if (u[ZID[i]] <> 0 and c[i] <> 0) then {
+				print maxLoc & ", " & wMVP & ", " & ZID[i] & ", " & w[ZID[i]] & ", " & i & ", " & v[i] > out/model_3_out_weights.csv;
+			}
+		}
+	
+	}
+};
+
+
+
+
+
+

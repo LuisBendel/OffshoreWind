@@ -1,0 +1,6 @@
+data/processed/hourly_2019_cells/
+data/processed/hourly_2019_clusters/
+data/raw/
+.Rhistory
+.Rproj.user/
+data/out/EUCL_dist.csv

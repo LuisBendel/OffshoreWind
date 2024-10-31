@@ -1,0 +1,6 @@
+
+param dist_min:= 15; # minimum difference between two selected cells (wind parks)
+param min_w:= 0.05; # minimum weight on a selected cell
+param maxLoc:= 5; # maximum number of selected cells (non-zero weights)
+param WPSS_min:= 0.65; # minimum WPSS score for selected cells
+param DistNW_min:= 15; # minimum distance to Norway for selected cells
