@@ -1,0 +1,6 @@
+Variable,min,max,mean,q25,median,q75
+Baseline WPSS,0.456,0.741,0.617,0.594,0.624,0.639
+Fisherman WPSS,0.375,0.858,0.731,0.707,0.743,0.768
+Ecologist WPSS,0.439,0.863,0.753,0.682,0.795,0.806
+Investor WPSS,0.469,0.751,0.602,0.58,0.602,0.621
+Capacity Factor,0.026,0.704,0.561,0.541,0.564,0.591

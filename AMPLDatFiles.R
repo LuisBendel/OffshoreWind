@@ -10,8 +10,8 @@ WPSS <- read_csv("data/out/WPSS.csv")
 CF <- read_csv("data/out/CF.csv")
 CF_Zones <- read_csv("data/out/CF_Zones.csv")
 DistNW <- read_csv("data/out/DistNW.csv")
-NID <- read_csv("data/out/NID.csv")
-euclidean_dist <- read_csv("data/out/EUCL_Dist.csv")
+# NID <- read_csv("data/out/NID.csv")
+# euclidean_dist <- read_csv("data/out/EUCL_Dist.csv")
 
 
 
@@ -198,7 +198,6 @@ close(file_conn)
 
 ## CF ---- 
 
-CF$CF <- -CF$CF
 filename <- "AMPL/CF.dat"
 file_conn <- file(filename, "w")
 # Write the header in AMPL format
@@ -224,7 +223,6 @@ close(file_conn)
 
 ## CF Zones ---- 
 
-CF_Zones$CF <- -CF_Zones$CF
 filename <- "AMPL/CF_Zones.dat"
 file_conn <- file(filename, "w")
 # Write the header in AMPL format
@@ -326,6 +324,19 @@ close(file_conn)
 
 
 
+
+## MZ_lower, MZ_upper ----
+gen <- function(n) {
+  (n * (500/30000) - 0.0025 + 1/30000) * 30000
+}
+
+gen2 <- function(n) {
+  (n * (500/30000) + 0.0025 - 1/30000) * 30000
+}
+
+
+sapply(1:60, gen)
+sapply(1:60, gen2)
 
 
 

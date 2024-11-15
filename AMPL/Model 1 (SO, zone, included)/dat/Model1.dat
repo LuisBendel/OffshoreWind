@@ -1,0 +1,8 @@
+
+param min_w:= 0.033; # minimum weight on a selected cell
+param max_w:= 0.2; # maximum weight on a selected cell
+param cell_weight:= 50; # in MW, MW that can be placed in one cell
+param maxLoc:= 20; # maximum number of selected cells (non-zero weights)
+param WPSS_min:= 0.6386339; # minimum WPSS score for selected cells
+param DistNW_min:= 15; # minimum distance to Norway for selected cells
+param MW_multiple:= 500; # in MW, windfarm size must be a multiple of this

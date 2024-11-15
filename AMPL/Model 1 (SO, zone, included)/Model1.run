@@ -1,0 +1,34 @@
+reset;
+model Model1.mod;
+data dat/Model1.dat;
+data dat/cov_matrix.dat;
+data dat/ZID.dat;
+data dat/WPSS.dat;
+data dat/CF.dat;
+data dat/DistNW.dat;
+
+
+option solver gurobi;
+
+
+solve;
+
+
+print "zone, weight, cell, WPSS, DistNW" > out/model_1_results.csv;
+for {z in Z} {
+	for {i in C: ZID[i] = z} {
+		if (u[z] = 1 and c[i] = 1) then {
+			print z & ", " & w[z] & ", " & i & ", " & WPSS[i] & ", " & DistNW[i] > out/model_1_results.csv;
+		}
+	}
+}
+
+display k;
+
+
+
+
+
+
+
+

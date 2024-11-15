@@ -6,9 +6,26 @@ library(R.matlab) # reading .mat files
 
 
 ## Load WPSS ----
+# Baseline
 WPSS <- readMat("data/raw/SCORES/SCORE_baseline.mat")$SCORE
 WPSS_long <- as.vector(WPSS)
 WPSS_NEZ <- WPSS_long[!is.na(WPSS_long)]
+
+# Fisherman
+WPSS_fish <- readMat("data/raw/SCORES/SCORE_fisherman.mat")$SCORE
+WPSS_fish_long <- as.vector(WPSS_fish)
+WPSS_fish_NEZ <- WPSS_fish_long[!is.na(WPSS_fish_long)]
+
+# Ecologist
+WPSS_ecol <- readMat("data/raw/SCORES/SCORE_ecologist.mat")$SCORE
+WPSS_ecol_long <- as.vector(WPSS_ecol)
+WPSS_ecol_NEZ <- WPSS_ecol_long[!is.na(WPSS_ecol_long)]
+
+# Investor
+WPSS_inv <- readMat("data/raw/SCORES/SCORE_investor.mat")$SCORE
+WPSS_inv_long <- as.vector(WPSS_inv)
+WPSS_inv_NEZ <- WPSS_inv_long[!is.na(WPSS_inv_long)]
+
 
 
 ## Load MinDistNW ----
@@ -62,17 +79,45 @@ colnames(monthly_data)[c(289:300)] <- paste0("AVG_M", c(1:12))
 
 
 
+## Add Filtered ID ----
+# contains only the cells that have a certain distance to Norway
+# The ID2 is a number from 1 to N (depending on how the distance to NW is set)
+# It is important to always reference the ID since all cell files are named
+# according to this ID. The ID2 is important to have a continuous set in AMPL
+# Through the data that is created in this file, ID2 can always be mapped to ID.
+ID2_df <- data.frame(
+  ID = c(1:nrow(coords_NEZ)),
+  dist_NW = MinDistNW_NEZ,
+  X = coords_NEZ[, "X"],
+  Y = coords_NEZ[, "Y"]
+) %>% 
+  mutate(ID2 = ifelse(dist_NW >= 9, ID, -1)) %>% # minimum dist to norway
+  filter(!ID2 == -1) %>% # filter out cells that are closer to NW
+  mutate(ID2 = row_number()) %>% 
+  right_join(x = ., y = data.frame(ID = 1:71021), by = "ID") %>% 
+  mutate(ID2 = ifelse(is.na(ID2), -1, ID2)) %>% 
+  select(ID, ID2) %>% 
+  arrange(ID) # this is important, otherwise R automatically orders according to ID2 and puts -1 in the end
+
+
+
+
 ## Combine ----
 
-# combine both, X and Y coordinates, WPSS, and monhtly power columns in one data frame
-# save combined matrix as .rds
+# combine both, X and Y coordinates, WPSS, and monthly power columns in one data frame
 monthly_NEZ <-
-  cbind(ID = c(1:nrow(coords_NEZ)), # unique cell ID from 1 to 71021
-        coords_NEZ, # X and Y grid coordinates
-        lon, # cell longitude 
-        lat, # cell latitude
-        WPSS_NEZ, # WPSS scores for NEZ
-        MinDistNW_NEZ) # minimum distance to Norway
+  data.frame(ID2_df, # unique cell ID (and ID2 with filter applied (see above))
+             X = coords_NEZ[, "X"], # X and Y grid coordinates
+             Y = coords_NEZ[, "Y"], # X and Y grid coordinates
+             lon = lon, # cell longitude 
+             lat = lat, # cell latitude
+             WPSS_NEZ = WPSS_NEZ, # WPSS scores for NEZ
+             WPSS_fish_NEZ = WPSS_fish_NEZ, # WPSS Fisherman scores for NEZ
+             WPSS_ecol_NEZ = WPSS_ecol_NEZ, # WPSS ecologist scores for NEZ
+             WPSS_inv_NEZ = WPSS_inv_NEZ, # WPSS investor scores for NEZ
+             MinDistNW_NEZ = MinDistNW_NEZ # minimum distance to Norway
+             ) %>% 
+  as.matrix()
 
 
 
@@ -82,7 +127,7 @@ monthly_NEZ <-
 # for 71021, it took approx. 40 hours on my PC (L.B.) to load all data
 
 # load cells NEZ data
-cells_NEZ <- monthly_NEZ[, 1:7]
+cells_NEZ <- monthly_NEZ[, 1:11]
 
 # open the 2019 bourly wind power .nc file
 hourly_2019 <- nc_open("C:/Users/luisr/Downloads/WindPower_generation_hourly_2019.nc")
@@ -125,23 +170,34 @@ CF_cells <- sapply(1:71021, function (i) {
   filename <- paste0("data/processed/hourly_2019_cells/hourly_2019_cell_", as.character(i), ".rds")
   hourly_cell <- readRDS(filename)
   print(i)
-  return(-mean(hourly_cell / 15000000))
+  return(-mean(hourly_cell / 15000000)) # negate, since we are minimizing the CF objective later
 })
 
 
 ## Combine everything ----
+
 monthly_NEZ <-
-  cbind(ID = c(1:nrow(coords_NEZ)), # unique cell ID from 1 to 71021
-        coords_NEZ, # X and Y grid coordinates
-        lon, # cell longitude 
-        lat, # cell latitude
-        WPSS_NEZ, # WPSS scores for NEZ
-        MinDistNW_NEZ, # minimum distance to Norway
-        CF_cells, # mean capacity factor for cells
-        monthly_data) # all monthly average wind power data
+  data.frame(ID2_df, # unique cell ID (and ID2 with filter applied (see above))
+             X = coords_NEZ[, "X"], # X and Y grid coordinates
+             Y = coords_NEZ[, "Y"], # X and Y grid coordinates
+             lon = lon, # cell longitude 
+             lat = lat, # cell latitude
+             WPSS_NEZ = WPSS_NEZ, # WPSS scores for NEZ
+             WPSS_fish_NEZ = WPSS_fish_NEZ, # WPSS Fisherman scores for NEZ
+             WPSS_ecol_NEZ = WPSS_ecol_NEZ, # WPSS ecologist scores for NEZ
+             WPSS_inv_NEZ = WPSS_inv_NEZ, # WPSS investor scores for NEZ
+             MinDistNW_NEZ = MinDistNW_NEZ, # minimum distance to Norway
+             CF_cells = CF_cells # mean capacity factor for cells
+             #monthly_data
+             ) %>% # all monthly average wind power data
+  as.matrix()
+
+monthly_NEZ <-
+  cbind(monthly_NEZ,
+        monthly_data)
 
 saveRDS(monthly_NEZ, file = "data/processed/monthly_NEZ.rds")
-saveRDS(monthly_NEZ[, 1:8], file = "data/processed/cells_NEZ.rds")
+saveRDS(monthly_NEZ[, 1:12], file = "data/processed/cells_NEZ.rds")
 
 
 

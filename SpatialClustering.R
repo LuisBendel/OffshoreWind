@@ -1,10 +1,6 @@
 
-library(sp)
-library(tidyverse)
-library(ClustGeo)
-library(rgeoda)
-library(sf)
-library(viridis)
+library(tidyverse) # data wrangling
+library(viridis) # color palette
 
 monthly_NEZ <- readRDS("data/processed/monthly_NEZ.rds")
 
@@ -19,21 +15,28 @@ colnames <-
 # add other columns to include in the KMeans clustering
 colnames <- c("X", "Y", colnames)
 
+
+
 # subset data to include only the above columns
-monthly_NEZ_cl <- monthly_NEZ[, colnames]
+monthly_NEZ_cl <- monthly_NEZ %>% 
+  as.data.frame() %>% 
+  select(all_of(colnames))
 
 # scale the data (only coords and power generation)
-data_scaled <- data.frame(scale(monthly_NEZ_cl))
+data_scaled <- scale(monthly_NEZ_cl)
 
 # put weights on coordinates to have more continuous clusters
 # this value as of now is arbitrarily chosen
-data_scaled[, c("X", "Y")] <- data_scaled[, c("X", "Y")] * 20
+# comment this out if you do not want to put more weight on coordinates
+# data_scaled[, c("X", "Y")] <- data_scaled[, c("X", "Y")]
 
 
 ## KMeans ----
 # use only coords and power generation in clustering
+
 set.seed(123)
-clusters_KM <- kmeans(data_scaled[, c(1:14)], centers = 100, iter.max = 100)
+# in the final approach, we only include the spatial variables X and Y
+clusters_KM <- kmeans(data_scaled[, c(1:2)], centers = 150, iter.max = 150)
 monthly_NEZ <- cbind(cluster_KM = clusters_KM$cluster, monthly_NEZ)
 
 # compute cluster centroids for each cluster
@@ -56,32 +59,8 @@ monthly_NEZ[, "cluster_KM"] <- monthly_NEZ[, "cluster_KM"] %>%
   pull(new_cluster_KM)
 
 saveRDS(monthly_NEZ, file = "data/processed/monthly_NEZ_clusters.rds")
-saveRDS(monthly_NEZ[, 1:9], file = "data/processed/cells_NEZ_clusters.rds")
+saveRDS(monthly_NEZ[, 1:13], file = "data/processed/cells_NEZ_clusters.rds")
 
 
 
-# the problem with Kmeans is that the clusters are geographically not
-# necessarily connected, for example with seed 123, cluster 33 is spread out
-# putting higher weights on the coordinates can decrease this problem
-cells_NEZ_clusters <- readRDS("data/processed/cells_NEZ_clusters.rds")
 
-plot1 <- data.frame(cells_NEZ_clusters) %>% 
-  ggplot(aes(x = X, y = Y, fill = as.factor(cluster_KM))) +
-    geom_raster() +
-    theme_minimal() +
-    guides(fill = "none") +
-    coord_fixed() +
-    scale_fill_viridis_d(option = "turbo", direction = 1) +
-    geom_text(data = cluster_centroids, aes(label = new_cluster_KM), color = "black", size = 3)
-
-ggsave(plot1, file = "plots/clusters_100_KM_weights20_inclwind.png", height = 1149/50,width = 652/50)
-
-# Here we can just filter on one cluster to test how the clusters look
-# check 33 and 67 with seed 123 on Kmeans
-data.frame(cells_NEZ_clusters) %>% 
-  mutate(check_cluster = ifelse(cluster_KM %in% c(4,8,10), 1, 0)) %>% 
-  ggplot(aes(x = X, y = Y, fill = as.factor(check_cluster))) +
-    geom_raster() +
-    theme_minimal() +
-    guides(color = "none") +
-    coord_fixed()
