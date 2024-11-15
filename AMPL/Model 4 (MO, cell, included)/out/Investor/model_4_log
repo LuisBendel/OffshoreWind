@@ -1,0 +1,203 @@
+
+Gurobi 11.0.3 (win64) logging started Fri Nov 15 15:53:04 2024
+
+Set parameter LogFile to value "out/Investor/model_4_log"
+Set parameter InfUnbdInfo to value 1
+Gurobi Optimizer version 11.0.3 build v11.0.3rc0 (win64 - Windows 11.0 (22631.2))
+
+CPU model: 12th Gen Intel(R) Core(TM) i7-1260P, instruction set [SSE2|AVX|AVX2]
+Thread count: 12 physical cores, 16 logical processors, using up to 16 threads
+
+Optimize a model with 30149 rows, 133839 columns and 89877 nonzeros
+Model fingerprint: 0x398c29e1
+Model has 2016 quadratic objective terms
+Model has 103754 general constraints
+Variable types: 14822 continuous, 119017 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [2e-02, 1e+01]
+  Objective range  [0e+00, 0e+00]
+  QObjective range [8e-06, 6e-01]
+  Bounds range     [1e+00, 5e+01]
+  RHS range        [1e+00, 1e+00]
+  GenCon rhs range [1e-04, 2e-03]
+  GenCon coe range [1e+00, 1e+00]
+Presolve added 105447 rows and 0 columns
+Presolve removed 0 rows and 14259 columns
+Presolve time: 0.30s
+Presolved: 135596 rows, 119580 columns, 300645 nonzeros
+Presolved model has 2016 quadratic objective terms
+Variable types: 29958 continuous, 89622 integer (89565 binary)
+Found heuristic solution: objective 0.1280392
+
+Root relaxation: objective 3.219896e-02, 120 iterations, 0.00 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0    0.03220    0   36    0.12804    0.03220  74.9%     -    1s
+H    0     0                       0.0323603    0.03220  0.50%     -    1s
+H    0     0                       0.0322914    0.03220  0.29%     -    1s
+H    0     0                       0.0322311    0.03220  0.10%     -    1s
+     0     0    0.03220    0   35    0.03223    0.03220  0.10%     -    1s
+     0     0    0.03220    0   35    0.03223    0.03220  0.10%     -    1s
+H    0     0                       0.0322239    0.03220  0.08%     -    1s
+     0     0    0.03220    0   33    0.03222    0.03220  0.08%     -    1s
+H    0     0                       0.0322223    0.03220  0.07%     -    1s
+     0     2    0.03220    0   33    0.03222    0.03220  0.07%     -    1s
+
+Cutting planes:
+  Learned: 8
+
+Explored 3116 nodes (9613 simplex iterations) in 1.61 seconds (0.96 work units)
+Thread count was 16 (of 16 available processors)
+
+Solution count 7: 0.0322223 0.0322239 0.0322311 ... 0.128039
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.222233035774e-02, best bound 3.222233035774e-02, gap 0.0000%
+
+Gurobi 11.0.3 (win64) logging started Fri Nov 15 15:53:06 2024
+
+Set parameter LogFile to value "out/Investor/model_4_log"
+Set parameter InfUnbdInfo to value 1
+Gurobi Optimizer version 11.0.3 build v11.0.3rc0 (win64 - Windows 11.0 (22631.2))
+
+CPU model: 12th Gen Intel(R) Core(TM) i7-1260P, instruction set [SSE2|AVX|AVX2]
+Thread count: 12 physical cores, 16 logical processors, using up to 16 threads
+
+Warning: LP warm-starts, PStart/DStart, discarded due to model modification
+Optimize a model with 30149 rows, 133839 columns and 89877 nonzeros
+Model fingerprint: 0x7de84bf7
+Model has 103754 general constraints
+Variable types: 14822 continuous, 119017 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [2e-02, 1e+01]
+  Objective range  [5e-01, 7e-01]
+  Bounds range     [1e+00, 5e+01]
+  RHS range        [1e+00, 1e+00]
+  GenCon rhs range [1e-04, 2e-03]
+  GenCon coe range [1e+00, 1e+00]
+
+User MIP start produced solution with objective -0.584144 (0.13s)
+Loaded user MIP start with objective -0.584144
+
+Presolve added 103187 rows and 0 columns
+Presolve removed 0 rows and 15389 columns
+Presolve time: 0.37s
+Presolved: 133336 rows, 118450 columns, 296125 nonzeros
+Variable types: 29581 continuous, 88869 integer (88812 binary)
+Found heuristic solution: objective -0.6503520
+
+Root relaxation: objective -6.997920e-01, 60 iterations, 0.00 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0   -0.69979    0    4   -0.65035   -0.69979  7.60%     -    1s
+H    0     0                      -0.6997896   -0.69979  0.00%     -    1s
+
+Explored 1 nodes (60 simplex iterations) in 1.86 seconds (1.08 work units)
+Thread count was 16 (of 16 available processors)
+
+Solution count 4: -0.69979 -0.650352 -0.649687 -0.584144 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -6.997895995492e-01, best bound -6.997919732653e-01, gap 0.0003%
+
+Gurobi 11.0.3 (win64) logging started Fri Nov 15 15:53:09 2024
+
+Set parameter LogFile to value "out/Investor/model_4_log"
+Set parameter InfUnbdInfo to value 1
+Gurobi Optimizer version 11.0.3 build v11.0.3rc0 (win64 - Windows 11.0 (22631.2))
+
+CPU model: 12th Gen Intel(R) Core(TM) i7-1260P, instruction set [SSE2|AVX|AVX2]
+Thread count: 12 physical cores, 16 logical processors, using up to 16 threads
+
+Warning: LP warm-starts, PStart/DStart, discarded due to model modification
+Optimize a model with 29996 rows, 132808 columns and 89412 nonzeros
+Model fingerprint: 0xed31c632
+Model has 1653 quadratic objective terms
+Model has 102984 general constraints
+Variable types: 14713 continuous, 118095 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [2e-02, 1e+01]
+  Objective range  [1e+00, 3e+00]
+  QObjective range [5e-05, 3e+00]
+  Bounds range     [1e+00, 1e+01]
+  RHS range        [1e+00, 2e+01]
+  GenCon rhs range [1e-04, 2e-03]
+  GenCon coe range [1e+00, 1e+00]
+
+User MIP start did not produce a new incumbent solution
+User MIP start violates constraint R18 by 0.150000000
+
+Presolve added 102528 rows and 0 columns
+Presolve removed 0 rows and 15169 columns
+Presolve time: 0.32s
+Presolved: 132524 rows, 117639 columns, 294354 nonzeros
+Presolved model has 1653 quadratic objective terms
+Variable types: 29367 continuous, 88272 integer (88215 binary)
+Found heuristic solution: objective 1.2137860
+Found heuristic solution: objective 0.7207448
+
+Root relaxation: objective 2.821105e-01, 2022 iterations, 0.20 seconds (0.21 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0    0.28211    0   57    0.72074    0.28211  60.9%     -    1s
+H    0     0                       0.2874021    0.28211  1.84%     -    1s
+H    0     0                       0.2842157    0.28211  0.74%     -    1s
+H    0     0                       0.2842155    0.28250  0.60%     -    1s
+     0     0    0.28250    0  101    0.28422    0.28250  0.60%     -    1s
+H    0     0                       0.2828745    0.28250  0.13%     -    2s
+H    0     0                       0.2828712    0.28250  0.13%     -    2s
+H    0     0                       0.2828213    0.28250  0.11%     -    2s
+     0     0    0.28251    0  118    0.28282    0.28251  0.11%     -    2s
+     0     0    0.28255    0   98    0.28282    0.28255  0.10%     -    2s
+     0     0    0.28255    0  101    0.28282    0.28255  0.10%     -    2s
+     0     0    0.28256    0  125    0.28282    0.28256  0.09%     -    2s
+     0     0    0.28257    0  131    0.28282    0.28257  0.09%     -    2s
+     0     0    0.28257    0  126    0.28282    0.28257  0.09%     -    2s
+     0     0    0.28257    0  135    0.28282    0.28257  0.09%     -    2s
+     0     0    0.28257    0  136    0.28282    0.28257  0.09%     -    2s
+     0     0    0.28258    0   53    0.28282    0.28258  0.09%     -    3s
+     0     0    0.28258    0   92    0.28282    0.28258  0.09%     -    3s
+     0     0    0.28258    0  112    0.28282    0.28258  0.09%     -    3s
+     0     0    0.28258    0  121    0.28282    0.28258  0.09%     -    3s
+     0     0    0.28258    0  146    0.28282    0.28258  0.09%     -    3s
+     0     0    0.28258    0  127    0.28282    0.28258  0.09%     -    3s
+     0     0    0.28258    0  131    0.28282    0.28258  0.09%     -    3s
+     0     0    0.28258    0  134    0.28282    0.28258  0.09%     -    4s
+     0     0    0.28258    0  144    0.28282    0.28258  0.09%     -    4s
+     0     0    0.28258    0  158    0.28282    0.28258  0.09%     -    4s
+     0     2    0.28259    0  158    0.28282    0.28259  0.08%     -    4s
+    51    58    0.28261    7  146    0.28282    0.28259  0.08%  25.7    5s
+  2225  1533    0.28281   47   50    0.28282    0.28259  0.08%  10.3   10s
+  2236  1544    0.28260   14  146    0.28282    0.28260  0.08%  11.3   15s
+  3929  1982    0.28280   66   46    0.28282    0.28260  0.08%  11.2   20s
+  6405  2662    0.28276   66   88    0.28282    0.28260  0.08%  10.8   27s
+  7671  3453    0.28280   52   56    0.28282    0.28260  0.08%  10.4   30s
+ 10613  5924    0.28280   45   54    0.28282    0.28262  0.07%   9.6   35s
+ 13144  8660    0.28275   37  119    0.28282    0.28262  0.07%   9.3   40s
+ 15871 10780    0.28281   60   99    0.28282    0.28262  0.07%   9.2   45s
+ 18808 12913     cutoff   50         0.28282    0.28262  0.07%   9.3   50s
+ 22348 15634    0.28268  103  108    0.28282    0.28262  0.07%   9.2   58s
+ 23915 15951    0.28270  216   94    0.28282    0.28262  0.07%   9.0   60s
+
+Cutting planes:
+  Learned: 7
+  Cover: 43
+  Implied bound: 54
+  Clique: 153
+  MIR: 19
+  Flow cover: 34
+  Network: 8
+
+Explored 24410 nodes (224562 simplex iterations) in 60.11 seconds (19.69 work units)
+Thread count was 16 (of 16 available processors)
+
+Solution count 8: 0.282821 0.282871 0.282874 ... 1.21379
+
+Time limit reached
+Best objective 2.828213460346e-01, best bound 2.826211073101e-01, gap 0.0708%

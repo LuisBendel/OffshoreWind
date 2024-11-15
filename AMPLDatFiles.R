@@ -10,6 +10,9 @@ WPSS <- read_csv("data/out/WPSS.csv")
 CF <- read_csv("data/out/CF.csv")
 CF_Zones <- read_csv("data/out/CF_Zones.csv")
 DistNW <- read_csv("data/out/DistNW.csv")
+WPSS_fish <- read_csv("data/out/WPSS_fish.csv")
+WPSS_ecol <- read_csv("data/out/WPSS_ecol.csv")
+WPSS_inv <- read_csv("data/out/WPSS_inv.csv")
 # NID <- read_csv("data/out/NID.csv")
 # euclidean_dist <- read_csv("data/out/EUCL_Dist.csv")
 
@@ -192,6 +195,89 @@ for (i in seq(1, n, by = chunk_size)) {
 writeLines(";", con = file_conn)
 # Close the file connection
 close(file_conn)
+
+
+
+
+## WPSS Fisherman ---- 
+
+filename <- "AMPL/WPSS_fish.dat"
+file_conn <- file(filename, "w")
+# Write the header in AMPL format
+writeLines("param WPSS:=", con = file_conn)
+# Write in chunks
+chunk_size <- 1000  # Adjust this based on your available memory and data size
+n <- nrow(WPSS_fish)
+# Loop through the data in chunks
+for (i in seq(1, n, by = chunk_size)) {
+  end <- min(i + chunk_size - 1, n)
+  lines_to_write <- paste(WPSS_fish$i[i:end],
+                          WPSS_fish$WPSS[i:end],
+                          sep = "\t")
+  writeLines(lines_to_write, con = file_conn)
+}
+# Close the parameter definition
+writeLines(";", con = file_conn)
+# Close the file connection
+close(file_conn)
+
+
+
+
+## WPSS Ecologist---- 
+
+filename <- "AMPL/WPSS_ecol.dat"
+file_conn <- file(filename, "w")
+# Write the header in AMPL format
+writeLines("param WPSS:=", con = file_conn)
+# Write in chunks
+chunk_size <- 1000  # Adjust this based on your available memory and data size
+n <- nrow(WPSS_ecol)
+# Loop through the data in chunks
+for (i in seq(1, n, by = chunk_size)) {
+  end <- min(i + chunk_size - 1, n)
+  lines_to_write <- paste(WPSS_ecol$i[i:end],
+                          WPSS_ecol$WPSS[i:end],
+                          sep = "\t")
+  writeLines(lines_to_write, con = file_conn)
+}
+# Close the parameter definition
+writeLines(";", con = file_conn)
+# Close the file connection
+close(file_conn)
+
+
+
+
+## WPSS Investor---- 
+
+filename <- "AMPL/WPSS_inv.dat"
+file_conn <- file(filename, "w")
+# Write the header in AMPL format
+writeLines("param WPSS:=", con = file_conn)
+# Write in chunks
+chunk_size <- 1000  # Adjust this based on your available memory and data size
+n <- nrow(WPSS_inv)
+# Loop through the data in chunks
+for (i in seq(1, n, by = chunk_size)) {
+  end <- min(i + chunk_size - 1, n)
+  lines_to_write <- paste(WPSS_inv$i[i:end],
+                          WPSS_inv$WPSS[i:end],
+                          sep = "\t")
+  writeLines(lines_to_write, con = file_conn)
+}
+# Close the parameter definition
+writeLines(";", con = file_conn)
+# Close the file connection
+close(file_conn)
+
+
+
+## WPSS 75th Quantiles ----
+quantile(WPSS$WPSS, probs = 0.75)
+quantile(WPSS_fish$WPSS, probs = 0.75)
+quantile(WPSS_ecol$WPSS, probs = 0.75)
+quantile(WPSS_inv$WPSS, probs = 0.75)
 
 
 

@@ -52,8 +52,17 @@ model_3_out_pareto <- read_csv("AMPL/Model 3 (not included)/out/model_3_out_pare
 model_3_out_weights <- read_csv("AMPL/Model 3 (not included)/out/model_3_out_weights.csv") %>% mutate(p = round(p, 2))
 
 # output files for Model 4
+# comment in/out depending on WPSS scenario
 model_4_out_pareto <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_pareto.csv") %>% mutate(p = round(p, 2))
 model_4_out_weights <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_weights.csv") %>% mutate(p = round(p, 2))
+model_4_out_pareto <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Fisherman/model_4_out_pareto_fish.csv") %>% mutate(p = round(p, 2))
+model_4_out_weights <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Fisherman/model_4_out_weights_fish.csv") %>% mutate(p = round(p, 2))
+model_4_out_pareto <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Ecologist/model_4_out_pareto_ecol.csv") %>% mutate(p = round(p, 2))
+model_4_out_weights <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Ecologist/model_4_out_weights_ecol.csv") %>% mutate(p = round(p, 2))
+model_4_out_pareto <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Investor/model_4_out_pareto_inv.csv") %>% mutate(p = round(p, 2))
+model_4_out_weights <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Investor/model_4_out_weights_inv.csv") %>% mutate(p = round(p, 2))
+
+
 
 # Statistics for correlations within all zones
 cor_within_all_zones <- read_csv("data/out/cor_within_all_zones.csv")
@@ -633,11 +642,16 @@ plot_WPSS_map_filtered <- cells_NEZ_clusters_df %>%
         axis.text = element_blank())
 
 
+
+
+
 ## CF + WPSS Map ----
 
 plot_CF_WPSS <- plot_grid(plot_CF_map, plot_WPSS_map, plot_WPSS_map_filtered, ncol = 3)
 
 ggsave(filename = "Plots/plot_CF_WPSS_map.png", plot = plot_CF_WPSS, height = 10, width = 17, dpi = 300, units = "in")
+
+
 
 
 

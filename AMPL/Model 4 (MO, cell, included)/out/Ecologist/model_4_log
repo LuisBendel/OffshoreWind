@@ -1,0 +1,206 @@
+
+Gurobi 11.0.3 (win64) logging started Fri Nov 15 15:41:24 2024
+
+Set parameter LogFile to value "out/Ecologist/model_4_log"
+Set parameter InfUnbdInfo to value 1
+Gurobi Optimizer version 11.0.3 build v11.0.3rc0 (win64 - Windows 11.0 (22631.2))
+
+CPU model: 12th Gen Intel(R) Core(TM) i7-1260P, instruction set [SSE2|AVX|AVX2]
+Thread count: 12 physical cores, 16 logical processors, using up to 16 threads
+
+Optimize a model with 36253 rows, 160495 columns and 107937 nonzeros
+Model fingerprint: 0xdc54d350
+Model has 4186 quadratic objective terms
+Model has 124334 general constraints
+Variable types: 17762 continuous, 142733 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [2e-02, 1e+01]
+  Objective range  [0e+00, 0e+00]
+  QObjective range [8e-06, 6e-01]
+  Bounds range     [1e+00, 5e+01]
+  RHS range        [1e+00, 1e+00]
+  GenCon rhs range [1e-04, 2e-03]
+  GenCon coe range [1e+00, 1e+00]
+Presolve added 125439 rows and 0 columns
+Presolve removed 0 rows and 17619 columns
+Presolve time: 0.39s
+Presolved: 161692 rows, 142876 columns, 358633 nonzeros
+Presolved model has 4186 quadratic objective terms
+Variable types: 35754 continuous, 107122 integer (107040 binary)
+Found heuristic solution: objective 0.1112012
+Found heuristic solution: objective 0.1035974
+
+Root relaxation: objective 3.118995e-02, 158 iterations, 0.00 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0    0.03119    0   37    0.10360    0.03119  69.9%     -    1s
+H    0     0                       0.0312825    0.03119  0.30%     -    1s
+H    0     0                       0.0312242    0.03119  0.11%     -    1s
+     0     0    0.03119    0   33    0.03122    0.03119  0.11%     -    1s
+     0     0    0.03119    0   33    0.03122    0.03119  0.11%     -    1s
+H    0     0                       0.0312228    0.03119  0.10%     -    1s
+     0     0    0.03119    0   33    0.03122    0.03119  0.10%     -    1s
+     0     0    0.03119    0   33    0.03122    0.03119  0.10%     -    1s
+     0     2    0.03119    0   33    0.03122    0.03119  0.10%     -    1s
+
+Cutting planes:
+  Learned: 9
+  Flow cover: 1
+
+Explored 5661 nodes (19837 simplex iterations) in 1.91 seconds (1.21 work units)
+Thread count was 16 (of 16 available processors)
+
+Solution count 5: 0.0312228 0.0312242 0.0312825 ... 0.111201
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.122277147325e-02, best bound 3.122277147325e-02, gap 0.0000%
+
+Gurobi 11.0.3 (win64) logging started Fri Nov 15 15:41:27 2024
+
+Set parameter LogFile to value "out/Ecologist/model_4_log"
+Set parameter InfUnbdInfo to value 1
+Gurobi Optimizer version 11.0.3 build v11.0.3rc0 (win64 - Windows 11.0 (22631.2))
+
+CPU model: 12th Gen Intel(R) Core(TM) i7-1260P, instruction set [SSE2|AVX|AVX2]
+Thread count: 12 physical cores, 16 logical processors, using up to 16 threads
+
+Warning: LP warm-starts, PStart/DStart, discarded due to model modification
+Optimize a model with 36253 rows, 160495 columns and 107937 nonzeros
+Model fingerprint: 0x85e2496a
+Model has 124334 general constraints
+Variable types: 17762 continuous, 142733 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [2e-02, 1e+01]
+  Objective range  [5e-01, 7e-01]
+  Bounds range     [1e+00, 5e+01]
+  RHS range        [1e+00, 1e+00]
+  GenCon rhs range [1e-04, 2e-03]
+  GenCon coe range [1e+00, 1e+00]
+
+User MIP start produced solution with objective -0.607318 (0.17s)
+Loaded user MIP start with objective -0.607318
+
+Presolve added 123515 rows and 0 columns
+Presolve removed 0 rows and 18581 columns
+Presolve time: 0.48s
+Presolved: 159768 rows, 141914 columns, 354785 nonzeros
+Variable types: 35433 continuous, 106481 integer (106399 binary)
+Found heuristic solution: objective -0.6100452
+Found heuristic solution: objective -0.6510661
+Found heuristic solution: objective -0.6561855
+
+Root relaxation: objective -6.992095e-01, 86 iterations, 0.01 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0   -0.69921    0    4   -0.65619   -0.69921  6.56%     -    2s
+H    0     0                      -0.6992012   -0.69921  0.00%     -    2s
+
+Explored 1 nodes (86 simplex iterations) in 2.21 seconds (1.37 work units)
+Thread count was 16 (of 16 available processors)
+
+Solution count 6: -0.699201 -0.656185 -0.656039 ... -0.607318
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -6.992012170545e-01, best bound -6.992095191475e-01, gap 0.0012%
+
+Gurobi 11.0.3 (win64) logging started Fri Nov 15 15:41:30 2024
+
+Set parameter LogFile to value "out/Ecologist/model_4_log"
+Set parameter InfUnbdInfo to value 1
+Gurobi Optimizer version 11.0.3 build v11.0.3rc0 (win64 - Windows 11.0 (22631.2))
+
+CPU model: 12th Gen Intel(R) Core(TM) i7-1260P, instruction set [SSE2|AVX|AVX2]
+Thread count: 12 physical cores, 16 logical processors, using up to 16 threads
+
+Warning: LP warm-starts, PStart/DStart, discarded due to model modification
+Optimize a model with 36054 rows, 159119 columns and 107336 nonzeros
+Model fingerprint: 0x0db507c6
+Model has 3403 quadratic objective terms
+Model has 123312 general constraints
+Variable types: 17617 continuous, 141502 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [2e-02, 1e+01]
+  Objective range  [1e+00, 4e+00]
+  QObjective range [5e-05, 4e+00]
+  Bounds range     [1e+00, 1e+01]
+  RHS range        [1e+00, 2e+01]
+  GenCon rhs range [1e-04, 2e-03]
+  GenCon coe range [1e+00, 1e+00]
+
+User MIP start did not produce a new incumbent solution
+User MIP start violates constraint R14 by 0.033333333
+
+Presolve added 122656 rows and 0 columns
+Presolve removed 0 rows and 18273 columns
+Presolve time: 0.36s
+Presolved: 158710 rows, 140846 columns, 352484 nonzeros
+Presolved model has 3403 quadratic objective terms
+Variable types: 35150 continuous, 105696 integer (105614 binary)
+Found heuristic solution: objective 1.1943358
+Found heuristic solution: objective 0.7616920
+
+Root relaxation: objective 3.002737e-01, 1553 iterations, 0.16 seconds (0.21 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0    0.30027    0   40    0.76169    0.30027  60.6%     -    1s
+H    0     0                       0.3025386    0.30027  0.75%     -    1s
+H    0     0                       0.3014878    0.30027  0.40%     -    2s
+H    0     0                       0.3011154    0.30027  0.28%     -    2s
+H    0     0                       0.3011153    0.30027  0.28%     -    2s
+     0     0    0.30068    0   68    0.30112    0.30068  0.14%     -    2s
+H    0     0                       0.3010282    0.30068  0.11%     -    2s
+     0     0    0.30069    0   62    0.30103    0.30069  0.11%     -    2s
+     0     0    0.30074    0   67    0.30103    0.30074  0.10%     -    2s
+     0     0    0.30074    0   73    0.30103    0.30074  0.10%     -    2s
+     0     0    0.30075    0   64    0.30103    0.30075  0.09%     -    2s
+     0     0    0.30075    0   70    0.30103    0.30075  0.09%     -    2s
+     0     0    0.30076    0   88    0.30103    0.30076  0.09%     -    2s
+     0     0    0.30076    0   89    0.30103    0.30076  0.09%     -    2s
+     0     0    0.30076    0   94    0.30103    0.30076  0.09%     -    2s
+     0     0    0.30078    0   35    0.30103    0.30078  0.08%     -    3s
+     0     0    0.30078    0   67    0.30103    0.30078  0.08%     -    3s
+     0     0    0.30078    0   68    0.30103    0.30078  0.08%     -    3s
+     0     0    0.30078    0   80    0.30103    0.30078  0.08%     -    3s
+     0     0    0.30078    0   85    0.30103    0.30078  0.08%     -    4s
+     0     0    0.30078    0   78    0.30103    0.30078  0.08%     -    4s
+     0     0    0.30078    0   80    0.30103    0.30078  0.08%     -    4s
+     0     0    0.30078    0   85    0.30103    0.30078  0.08%     -    4s
+     0     0    0.30078    0   84    0.30103    0.30078  0.08%     -    4s
+     0     0    0.30079    0   86    0.30103    0.30079  0.08%     -    4s
+     0     2    0.30081    0   86    0.30103    0.30081  0.07%     -    4s
+    65    88    0.30086    9   85    0.30103    0.30082  0.07%   7.0    5s
+  4136  4175    0.30094   78   64    0.30103    0.30082  0.07%   5.1   10s
+  6968  6797    0.30100  259   31    0.30103    0.30082  0.07%   4.9   15s
+  9037  8352    0.30096  257   75    0.30103    0.30082  0.07%   4.7   20s
+  9212  8418    0.30091   21   67    0.30103    0.30085  0.06%   5.2   25s
+ 10433  9168     cutoff   54         0.30103    0.30085  0.06%   5.4   30s
+ 12081  9718    0.30101   86   17    0.30103    0.30085  0.06%   6.0   35s
+ 13200 10215    0.30100   72   21    0.30103    0.30085  0.06%   6.1   40s
+ 14179 10826    0.30101  143   34    0.30103    0.30085  0.06%   6.2   45s
+ 16054 11598    0.30088   37  102    0.30103    0.30085  0.06%   6.4   51s
+ 17319 12304    0.30094  111   54    0.30103    0.30085  0.06%   6.4   55s
+ 18959 12926    0.30095  223   51    0.30103    0.30085  0.06%   6.4   60s
+
+Cutting planes:
+  Learned: 6
+  Cover: 41
+  Implied bound: 27
+  Clique: 120
+  MIR: 23
+  StrongCG: 4
+  Flow cover: 29
+  Relax-and-lift: 6
+
+Explored 19829 nodes (132126 simplex iterations) in 60.13 seconds (18.47 work units)
+Thread count was 16 (of 16 available processors)
+
+Solution count 7: 0.301028 0.301115 0.301115 ... 1.19434
+
+Time limit reached
+Best objective 3.010281538720e-01, best bound 3.008459885268e-01, gap 0.0605%
