@@ -67,7 +67,7 @@ get_sd_actual <- function (MFarms, MVPweight, weightsdata) {
   cov_cells <- cov(cells_hourly_CF)
   
   # calculate portfolio variance (weights are the same for all cells)
-  portfolio_variance <- sum(cov_cells * 0.0025^2)
+  portfolio_variance <- sum(cov_cells * ((50 / 30000)^2))
   
   # return the standard deviation (sqrt of variance)
   return(sqrt(portfolio_variance))
@@ -75,6 +75,33 @@ get_sd_actual <- function (MFarms, MVPweight, weightsdata) {
 
 
 #get_sd_actual(30, 0.7, model_4_out_weights)
+
+
+
+
+## Get Mean CF ----
+
+get_mean_CF <- function (MFarms, MVPweight, weightsdata) {
+  cells <- weightsdata %>% 
+    filter(p == MVPweight, maxfarms == MFarms) %>% 
+    pull(cell)
+  
+  cells_NEZ_clusters_df %>% 
+    filter(ID %in% cells) %>% 
+    pull(CF_cells) %>% 
+    mean()
+}
+
+
+
+## Get Number of Locations ----
+
+get_n_locations <- function (MFarms, MVPweight, weightsdata) {
+  weightsdata %>% 
+    filter(p == MVPweight, maxfarms == MFarms) %>% 
+    pull(zone) %>% unique() %>% 
+    length()
+}
 
 
 
@@ -137,7 +164,7 @@ get_polygons_NVE <- function (data, name, NEZ_grid) {
   # Find the nearest grid cell X/Y for each each point in data point
   nearest_indices <- st_nearest_feature(data_sf, NEZ_grid_sf)
   data_xy <- data %>%
-    mutate(X = grid_sf$X[nearest_indices], Y = grid_sf$Y[nearest_indices])
+    mutate(X = NEZ_grid_sf$X[nearest_indices], Y = NEZ_grid_sf$Y[nearest_indices])
 
   # add the first point so polygon is closed
   data_xy <- rbind(data_xy, data_xy[1, ])
@@ -150,3 +177,25 @@ get_polygons_NVE <- function (data, name, NEZ_grid) {
   return(st_sf(geometry = polygon_sf))
   
 }
+
+
+
+## Cells Outline ----
+
+get_cells_in_polygon <- function (shapes) {
+  
+  # Convert all cells to an sf object
+  all_cells_sf <- st_as_sf(cells_NEZ_clusters_df %>% select(ID, X, Y),
+                           coords = c("X", "Y"),
+                           crs = st_crs(shapes))
+  
+  # Find cells within each polygon and add the zone ID to them
+  cells_within_outline <- all_cells_sf %>%
+    st_join(shapes, join = st_within) %>%  # Join cells with outlines they fall within
+    filter(!is.na(zones))  # Filter to keep only cells within an outline
+  
+  return(cells_within_outline)
+  
+}
+
+

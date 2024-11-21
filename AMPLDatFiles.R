@@ -204,7 +204,7 @@ close(file_conn)
 filename <- "AMPL/WPSS_fish.dat"
 file_conn <- file(filename, "w")
 # Write the header in AMPL format
-writeLines("param WPSS:=", con = file_conn)
+writeLines("param WPSS_fish:=", con = file_conn)
 # Write in chunks
 chunk_size <- 1000  # Adjust this based on your available memory and data size
 n <- nrow(WPSS_fish)
@@ -229,7 +229,7 @@ close(file_conn)
 filename <- "AMPL/WPSS_ecol.dat"
 file_conn <- file(filename, "w")
 # Write the header in AMPL format
-writeLines("param WPSS:=", con = file_conn)
+writeLines("param WPSS_ecol:=", con = file_conn)
 # Write in chunks
 chunk_size <- 1000  # Adjust this based on your available memory and data size
 n <- nrow(WPSS_ecol)
@@ -254,7 +254,7 @@ close(file_conn)
 filename <- "AMPL/WPSS_inv.dat"
 file_conn <- file(filename, "w")
 # Write the header in AMPL format
-writeLines("param WPSS:=", con = file_conn)
+writeLines("param WPSS_inv:=", con = file_conn)
 # Write in chunks
 chunk_size <- 1000  # Adjust this based on your available memory and data size
 n <- nrow(WPSS_inv)

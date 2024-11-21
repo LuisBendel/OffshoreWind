@@ -3,9 +3,13 @@ library(tidyverse)
 library(viridis)
 library(sp)
 library(sf)
+library(concaveman)
 
 # Source functions file
 source("Functions.R")
+
+
+## LOAD DATA ----
 
 # general cells data for NEZ
 cells_NEZ_clusters_df <- data.frame(readRDS("data/processed/cells_NEZ_clusters.rds"))
@@ -13,6 +17,9 @@ cells_NEZ_clusters_df <- data.frame(readRDS("data/processed/cells_NEZ_clusters.r
 # output files for Model 4
 model_4_out_pareto <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_pareto.csv") %>% mutate(p = round(p, 2))
 model_4_out_weights <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_weights.csv") %>% mutate(p = round(p, 2))
+
+
+## Tests ----
 
 # test if weights add up to 2000 turbines
 test <- model_4_out_weights %>% 
@@ -48,9 +55,11 @@ test4 %>%
 
 
 
-## 50/50 Baseline Summary
+## Zone Summary Table ----
 
-polygons <- get_polygons(pMVP = 0.5, M = 20)
+pMVP = 0.95
+
+polygons <- get_polygons(pMVP = pMVP, M = 20)
 
 # Convert all cells to an sf object
 all_cells_sf <- st_as_sf(cells_NEZ_clusters_df %>% select(ID, X, Y, WPSS_NEZ),
@@ -67,7 +76,14 @@ cells_within_outline <- all_cells_sf %>%
 cells_summary_outline <- cells_within_outline %>% 
   left_join(x = ., y = (cells_NEZ_clusters_df %>% select(-WPSS_NEZ)), by = c("ID" = "ID")) %>% 
   #filter(WPSS_NEZ >= 0.6386339) %>% 
-  mutate(WPSS_threshold = ifelse(WPSS_NEZ >= 0.6386339, 1, 0)) %>% 
+  mutate(WPSS_threshold = ifelse(WPSS_NEZ >= 0.6386339, 1, 0),
+         WPSS_threshold_fish = ifelse(WPSS_fish_NEZ >=  0.7678101, 1, 0),
+         WPSS_threshold_ecol = ifelse(WPSS_ecol_NEZ >= 0.8056636, 1, 0),
+         WPSS_threshold_inv = ifelse(WPSS_inv_NEZ >= 0.6209197, 1, 0)) %>% 
+  mutate(WPSS_threshold_All = ifelse(WPSS_threshold == 1 &
+                                       WPSS_threshold_fish == 1 &
+                                       WPSS_threshold_ecol == 1 &
+                                       WPSS_threshold_inv == 1, 1, 0)) %>% 
   group_by(zones) %>% 
   summarise(CF_outline = round(-mean(CF_cells) * 100, 1),
             WPSS_outline = round(mean(WPSS_NEZ), 3),
@@ -75,14 +91,18 @@ cells_summary_outline <- cells_within_outline %>%
             WPSS_ecol_outline = round(mean(WPSS_ecol_NEZ), 3),
             WPSS_inv_outline = round(mean(WPSS_inv_NEZ), 3),
             n_cells_outline = n(),
-            n_cells_outline_WPSSfiltered = sum(WPSS_threshold)) %>% 
+            n_cells_outline_WPSSfiltered = sum(WPSS_threshold), # comment in for baseline WPSS
+            #n_cells_outline_WPSSfiltered = sum(WPSS_threshold_fish), # comment in for fisherman WPSS
+            #n_cells_outline_WPSSfiltered = sum(WPSS_threshold_ecol), # comment in for ecologist WPSS
+            #n_cells_outline_WPSSfiltered = sum(WPSS_threshold_inv), # comment in for investor WPSS
+            n_cells_outline_WPSSfilteredAll = sum(WPSS_threshold_All)) %>% 
   ungroup() %>% 
   as_tibble() %>% 
   select(-geometry)
 
 # next, calculate everything for the selected cells only
 cells_summary_selected <- model_4_out_weights %>% 
-  filter(maxfarms == 20, p == 0.5) %>% 
+  filter(maxfarms == 20, p == pMVP) %>% 
   mutate(MW = weight_c * 30000) %>% 
   left_join(x = ., y = cells_NEZ_clusters_df, by = c("cell" = "ID")) %>% 
   group_by(zone) %>% 
@@ -103,19 +123,47 @@ zone_summary <- cells_summary_selected %>%
   select(zone, MW, MW_pct, n_turbines,
          CF_selected, CF_outline,
          WPSS_selected, WPSS_outline,
-         n_cells_selected, n_cells_outline, n_cells_outline_WPSSfiltered)
+         WPSS_fish_selected, WPSS_fish_outline,
+         WPSS_ecol_selected, WPSS_ecol_outline,
+         WPSS_inv_selected, WPSS_inv_outline,
+         n_cells_selected, n_cells_outline, n_cells_outline_WPSSfiltered, n_cells_outline_WPSSfilteredAll)
 
 write_csv(zone_summary, file = "data/out/model_4_05_M20_ZoneSummary.csv")
+write_csv(zone_summary, file = "data/out/model_4_025_M20_ZoneSummary.csv")
+write_csv(zone_summary, file = "data/out/model_4_075_M20_ZoneSummary.csv")
+
+write_csv(zone_summary, file = "data/out/model_4_05_M20_ZoneSummary_AllWPSS.csv")
   
 
 
 
-## SD Actual vs Model ----
+## SD Actual vs Outline vs Model ----
 
+model_4_out_weights_outlined <- model_4_out_pareto %>% 
+  mutate(polygons = map2(.x = p, .y = maxfarms, .f = get_polygons)) %>% 
+  mutate(cells_outline = map(.x = polygons, .f = get_cells_in_polygon)) %>% 
+  unnest(cells_outline) %>% 
+  select(maxfarms, p, ID) %>% 
+  rename(cell = ID)
+
+# this runs quite long due to the get_sd_actual function
 model_4_out_pareto_actual <- model_4_out_pareto %>% 
-  mutate(MeanSD_actual = map2_dbl(maxfarms, p, get_sd_actual, weightsdata = model_4_out_weights))
+  mutate(MeanSD_actual = map2_dbl(maxfarms, p, get_sd_actual, weightsdata = model_4_out_weights)) %>% 
+  mutate(MeanSD_outlined = map2_dbl(maxfarms, p, get_sd_actual, weightsdata = model_4_out_weights_outlined)) %>% 
+  mutate(MeanCF_outlined = map2_dbl(maxfarms, p, get_mean_CF, weightsdata = model_4_out_weights_outlined)) %>% 
+  mutate(MeanCF = round(-MeanCF*100, 1),
+         MeanCF_outlined = round(-MeanCF_outlined*100, 1),
+         MeanSD = round(MeanSD, 3),
+         MeanSD_actual = round(MeanSD_actual, 3),
+         MeanSD_outlined = round(MeanSD_outlined, 3)) %>% 
+  mutate(n_locations = map2_dbl(maxfarms, p, get_n_locations, weightsdata = model_4_out_weights))
 
 write_csv(model_4_out_pareto_actual, file = "data/out/model_4_out_pareto_actual.csv")
+
+  
+
+test %>% unnest(polygons)
+  
 
 
 
@@ -174,4 +222,131 @@ log_df <- data.frame(
 )
 
 write_csv(log_df, file = "data/out/model_4_log_results.csv")
+
+
+
+
+
+## CASE summary ----
+
+
+#### A
+CASEA1 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_pareto.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.5)
+
+CASEA2 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_pareto.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.75)
+
+CASEA3 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_pareto.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.25)
+
+#### B
+CASEB1 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Fisherman/model_4_out_pareto_fish.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.5)
+
+CASEB2 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Ecologist/model_4_out_pareto_ecol.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.5)
+
+CASEB3 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Investor/model_4_out_pareto_inv.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.5)
+
+#### C
+CASEC1 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/AllWPSS/model_4_out_pareto_All.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.5)
+
+CASEC2 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/AllWPSS/model_4_out_pareto_All.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.75)
+
+AllCases <- rbind(
+  CASEA1, CASEA2, CASEA3, CASEB1, CASEB2, CASEB3, CASEC1, CASEC2
+)
+
+
+#### Weights
+n_CASEA1 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_weights.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.5) %>% pull(zone) %>% unique() %>% length()
+
+n_CASEA2 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_weights.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.75) %>% pull(zone) %>% unique() %>% length()
+
+n_CASEA3 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_weights.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.25) %>% pull(zone) %>% unique() %>% length()
+
+#### B
+n_CASEB1 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Fisherman/model_4_out_weights_fish.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.5) %>% pull(zone) %>% unique() %>% length()
+
+n_CASEB2 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Ecologist/model_4_out_weights_ecol.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.5) %>% pull(zone) %>% unique() %>% length()
+
+n_CASEB3 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Investor/model_4_out_weights_inv.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.5) %>% pull(zone) %>% unique() %>% length()
+
+#### C
+n_CASEC1 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/AllWPSS/model_4_out_weights_All.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.5) %>% pull(zone) %>% unique() %>% length()
+
+n_CASEC2 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/AllWPSS/model_4_out_weights_All.csv") %>% 
+  mutate(p = round(p, 2)) %>% 
+  filter(p == 0.75) %>% pull(zone) %>% unique() %>% length()
+
+n_AllCases <- c(
+  n_CASEA1, n_CASEA2, n_CASEA3, n_CASEB1, n_CASEB2, n_CASEB3, n_CASEC1, n_CASEC2
+)
+
+
+#### Manual Columns
+col_CASEName <- c(
+  "CASE A1", "CASE A2", "CASE A3",
+  "CASE B1", "CASE B2", "CASE B3",
+  "CASE C1", "CASE C2"
+)
+
+col_WPSSConstraint <- c(
+  "Baseline",
+  "Baseline",
+  "Baseline",
+  "Fisherman",
+  "Ecologist",
+  "Investor",
+  "All WPSS",
+  "All WPSS"
+)
+
+col_WeightMVP <- c(
+  50, 75, 25, 50, 50, 50, 50, 75
+)
+
+col_WeightCF <- c(
+  50, 25, 75, 50, 50, 50, 50, 25
+)
+
+CASE_summary <- cbind(
+  CASE = col_CASEName,
+  WPSSCOnstraint = col_WPSSConstraint,
+  WeightMVP = col_WeightMVP,
+  WeightCF = col_WeightCF,
+  n_locations = n_AllCases,
+  AllCases
+) %>% 
+  select(-maxfarms, -MeanVariance, -p, -BiObj) %>% 
+  mutate(MeanSD = round(MeanSD, 3),
+         MeanCF = round(100*(-MeanCF), 1))
+
+write_csv(CASE_summary, file = "data/out/model_4_case_summary.csv")
 

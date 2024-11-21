@@ -7,9 +7,9 @@ data dat/CF.dat;
 data dat/DistNW.dat;
 
 ##### Change depending on which score you want to use (base, fisherman, ecologist, investor
-#data dat/WPSS.dat;
-#data dat/WPSS_fish.dat;
-#data dat/WPSS_ecol.dat;
+data dat/WPSS.dat;
+data dat/WPSS_fish.dat;
+data dat/WPSS_ecol.dat;
 data dat/WPSS_inv.dat;
 ############################################################################
 
@@ -18,7 +18,8 @@ option solver gurobi;
 #option gurobi_options 'MIPFocus=1 TimeLimit=60 logfile=out/model_4_log nonconvex=1';
 #option gurobi_options 'MIPFocus=1 TimeLimit=60 logfile=out/Fisherman/model_4_log nonconvex=1';
 #option gurobi_options 'MIPFocus=1 TimeLimit=60 logfile=out/Ecologist/model_4_log nonconvex=1';
-option gurobi_options 'MIPFocus=1 TimeLimit=60 logfile=out/Investor/model_4_log nonconvex=1';
+#option gurobi_options 'MIPFocus=1 TimeLimit=60 logfile=out/Investor/model_4_log nonconvex=1';
+option gurobi_options 'MIPFocus=1 TimeLimit=60 logfile=out/AllWPSS/model_4_log nonconvex=1';
 
 
 
@@ -85,7 +86,7 @@ param MeanVariance;
 param MeanSD;
 param MeanCF;
 
-param weight_steps := 0.5; # change this value for granularity of pareto front
+param weight_steps := 0.25; # change this value for granularity of pareto front
 param n_iterations := (1 / weight_steps) - 1;
 
 
@@ -98,8 +99,10 @@ redeclare subject to maxfarms: sum{z in Z}u[z] <= maxLoc;
 #print "maxfarms, p, zone, weight_z, cell, weight_c" > out/Fisherman/model_4_out_weights_fish.csv; # Fisherman WPSS
 #print "maxfarms, p, MeanVariance, MeanSD, MeanCF, BiObj" > out/Ecologist/model_4_out_pareto_ecol.csv; # Ecologist WPSS
 #print "maxfarms, p, zone, weight_z, cell, weight_c" > out/Ecologist/model_4_out_weights_ecol.csv; # Ecologist WPSS
-print "maxfarms, p, MeanVariance, MeanSD, MeanCF, BiObj" > out/Investor/model_4_out_pareto_inv.csv; # Investor WPSS
-print "maxfarms, p, zone, weight_z, cell, weight_c" > out/Investor/model_4_out_weights_inv.csv; # Investor WPSS
+#print "maxfarms, p, MeanVariance, MeanSD, MeanCF, BiObj" > out/Investor/model_4_out_pareto_inv.csv; # Investor WPSS
+#print "maxfarms, p, zone, weight_z, cell, weight_c" > out/Investor/model_4_out_weights_inv.csv; # Investor WPSS
+print "maxfarms, p, MeanVariance, MeanSD, MeanCF, BiObj" > out/AllWPSS/model_4_out_pareto_All.csv; # Investor WPSS
+print "maxfarms, p, zone, weight_z, cell, weight_c" > out/AllWPSS/model_4_out_weights_All.csv; # Investor WPSS
 
 for {n in {3}}{ # decide which values for MaxLocs you want to run the model (this is the index for the parameter MaxLocs)
 	print "";
@@ -118,11 +121,11 @@ for {n in {3}}{ # decide which values for MaxLocs you want to run the model (thi
 		let MeanSD := sqrt(MeanVariance);
 		let MeanCF := sum{i in C}v[i] * CF[i];
 		
-		print maxLoc & ", " & wMVP & ", " & MeanVariance & ", " & MeanSD & ", " & MeanCF & ", " & BiObj > out/Investor/model_4_out_pareto_inv.csv; # change this to the right path depending on scenario!
+		print maxLoc & ", " & wMVP & ", " & MeanVariance & ", " & MeanSD & ", " & MeanCF & ", " & BiObj > out/AllWPSS/model_4_out_pareto_All.csv; # change this to the right path depending on scenario!
 	
 		for {i in C} {
 			if (u[ZID[i]] <> 0 and c[i] <> 0) then {
-				print maxLoc & ", " & wMVP & ", " & ZID[i] & ", " & w[ZID[i]] & ", " & i & ", " & v[i] > out/Investor/model_4_out_weights_inv.csv; # change this to the right path depending on scenario!
+				print maxLoc & ", " & wMVP & ", " & ZID[i] & ", " & w[ZID[i]] & ", " & i & ", " & v[i] > out/AllWPSS/model_4_out_weights_All.csv; # change this to the right path depending on scenario!
 			}
 		}
 	

@@ -55,12 +55,22 @@ model_3_out_weights <- read_csv("AMPL/Model 3 (not included)/out/model_3_out_wei
 # comment in/out depending on WPSS scenario
 model_4_out_pareto <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_pareto.csv") %>% mutate(p = round(p, 2))
 model_4_out_weights <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_weights.csv") %>% mutate(p = round(p, 2))
+# Fisherman
 model_4_out_pareto <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Fisherman/model_4_out_pareto_fish.csv") %>% mutate(p = round(p, 2))
 model_4_out_weights <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Fisherman/model_4_out_weights_fish.csv") %>% mutate(p = round(p, 2))
+# Ecologist
 model_4_out_pareto <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Ecologist/model_4_out_pareto_ecol.csv") %>% mutate(p = round(p, 2))
 model_4_out_weights <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Ecologist/model_4_out_weights_ecol.csv") %>% mutate(p = round(p, 2))
+# Investor
 model_4_out_pareto <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Investor/model_4_out_pareto_inv.csv") %>% mutate(p = round(p, 2))
 model_4_out_weights <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Investor/model_4_out_weights_inv.csv") %>% mutate(p = round(p, 2))
+# All WPSS
+model_4_out_pareto <- read_csv("AMPL/Model 4 (MO, cell, included)/out/AllWPSS/model_4_out_pareto_All.csv") %>% mutate(p = round(p, 2))
+model_4_out_weights <- read_csv("AMPL/Model 4 (MO, cell, included)/out/AllWPSS/model_4_out_weights_All.csv") %>% mutate(p = round(p, 2))
+
+# actual pareto front for model 4
+model_4_out_pareto_actual <- read_csv("data/out/model_4_out_pareto_actual.csv") %>% mutate(p = round(p, 2))
+
 
 
 
@@ -283,7 +293,7 @@ ggsave(plot_M4_OneZone, file = plotname, height = 1149/200,width = 652/200)
 
 
 
-## Polygons 50/50 ----
+## Polygons ----
 
 pMVP = 0.5
 M = 20
@@ -314,28 +324,45 @@ zones_arrow_df <- cluster_centroids_selected %>%
          Y_end = row_number() * (800 / length(zones)) + 350)
 
 plot_M4_polygons <- ggplot(cells_NEZ_clusters_df) +
-  # Plot the entire zone with geom_raster
   geom_raster(aes(x = X, y = Y), show.legend = FALSE, fill = "lightgrey") +
   geom_sf(data = polygons, fill = "#7393B3", color = "black", size = 1) +
   # Add arrows with geom_segment
-  geom_segment(data = zones_arrow_df, aes(x = X_start, y = Y_start, xend = X_end, yend = Y_end), color = "black", linewidth = 0.2) +
+  #geom_segment(data = zones_arrow_df, aes(x = X_start, y = Y_start, xend = X_end, yend = Y_end), color = "black", linewidth = 0.2) +
   # Add text labels for the zone IDs
-  geom_text(data = zones_arrow_df, aes(x = X_end, y = Y_end, label = zone), hjust = 0, vjust = 0.5, size = 5) +
-  xlim(c(0, 800)) +
+  #geom_text(data = zones_arrow_df, aes(x = X_end, y = Y_end, label = zone), hjust = 0, vjust = 0.5, size = 5) +
+  geom_text(aes(x = 100, y = 400, label = "A"), size = 8) + # change this depending on in which grid you use it
+  #xlim(c(0, 800)) +
   labs(x = "", y = "") +
   theme_minimal() +
-  theme(axis.text = element_blank())
+  theme(axis.text = element_blank(),
+        panel.grid = element_blank())
 
-ggsave(filename = "Plots/plot_M4_polygons_p05_M20.png", plot = plot_M4_polygons, width = 10, height = 12, dpi = 300, units = "in")
+ggsave(filename = "Plots/plot_M4_polygons_p05_M20_fish_NoNumbers.png", plot = plot_M4_polygons, width = 10, height = 12, dpi = 300, units = "in")
+
+
+# With different personas without numbers in one plot grid
+plot_M4_polygons_fish_img <- grid::rasterGrob(png::readPNG("Plots/plot_M4_polygons_p05_M20_fish_NoNumbers.png"), interpolate = TRUE)
+plot_M4_polygons_ecol_img <- grid::rasterGrob(png::readPNG("Plots/plot_M4_polygons_p05_M20_ecol_NoNumbers.png"), interpolate = TRUE)
+plot_M4_polygons_inv_img <- grid::rasterGrob(png::readPNG("Plots/plot_M4_polygons_p05_M20_inv_NoNumbers.png"), interpolate = TRUE)
+
+plot_grid_polygon_WPSS_sensitivity <-
+  grid.arrange(plot_M4_polygons_fish_img,
+               plot_M4_polygons_ecol_img,
+               plot_M4_polygons_inv_img,
+               ncol = 3)
+
+ggsave(filename = "Plots/plot_grid_polygon_WPSS_sensitivity.png", plot = plot_grid_polygon_WPSS_sensitivity, width = 18, height = 10, dpi = 300, units = "in")
+
+
 
 
 
 
 ## Polygons One Zone ----
 
-pMVP = 0.5
+pMVP = 0.75
 M = 20
-zone_to_display = 41
+zone_to_display = 104
 
 # get all polygons and select the zone that should be displayed
 polygons <- get_polygons(pMVP = pMVP, M = M)
@@ -352,7 +379,7 @@ plot_M4_OneZone <- cells_NEZ_clusters_df %>%
   mutate(selected = ifelse(ID %in% M4_ZONE_selected_cells, 1, 0)) %>% #M4_ZONE_selected_cells
   ggplot() +
   geom_raster(aes(x = X, y = Y, fill = as.factor(selected))) +
-  geom_text(aes(x = 225, y = 535, label = "B"), size = 6) + # change this depending on in which grid you use it
+  #geom_text(aes(x = 225, y = 535, label = "B"), size = 6) + # change this depending on in which grid you use it
   scale_fill_manual(values = c("lightgrey", "#7393B3")) +
   coord_fixed() +
   theme_minimal() +
@@ -372,7 +399,7 @@ plot_M4_OneZone_polygon <- cells_NEZ_clusters_df %>%
   geom_raster(aes(x = X, y = Y, fill = as.factor(selected))) +
   scale_fill_manual(values = c("lightgrey", "#7393B3")) +
   geom_sf(data = polygon_zone, fill = "#7393B3", color = "black", size = 1, alpha = 0.6) +
-  geom_text(aes(x = 225, y = 535, label = "C"), size = 6) + # change this depending on in which grid you use it
+  #geom_text(aes(x = 225, y = 535, label = "C"), size = 6) + # change this depending on in which grid you use it
   coord_sf() +
   theme_minimal() +
   #labs(fill = "Selected") + # comment in/out depending on which plot grid 
@@ -388,7 +415,7 @@ ggsave(filename = "Plots/plot_M4_Zone41_Polygon.png", plot = plot_M4_OneZone_pol
 # combine one zone cell with one zone polygon
 plot_M4_OneZone_grid <- plot_grid(plot_M4_OneZone, plot_M4_OneZone_polygon, ncol = 2)
 
-plotname <- paste0("Plots/plot_Model4_OneZone_", M, "Farms_", gsub("\\.", "-", pMVP), "xMVP.png")
+plotname <- paste0("Plots/plot_Model4_OneZone_", M, "Farms_", gsub("\\.", "-", pMVP), "xMVP_AllWPSS.png")
 
 ggsave(filename = plotname, plot = plot_M4_OneZone_grid, height = 10, width = 14, dpi = 300, units = "in")
 
@@ -538,14 +565,42 @@ ggsave(filename = "Plots/plot_M4_20Farms_pareto.png", plot = plot_M4_20Farms_par
 
 
 
+## Pareto Front Actual ----
+model_4_out_pareto_actual %>% 
+  pivot_longer(cols = c("MeanSD", "MeanSD_actual", "MeanSD_outlined"),
+               values_to = "SD",
+               names_to = "SDCalcType") %>% 
+  mutate(CF = ifelse(SDCalcType == "MeanSD_outlined", MeanCF_outlined, MeanCF)) %>% 
+  ggplot(aes(x = SD, y = CF, color = SDCalcType)) +
+  geom_line() +
+  theme_minimal()
+
+model_4_out_pareto_actual %>% 
+  pivot_longer(cols = c("MeanSD", "MeanSD_actual", "MeanSD_outlined"),
+               values_to = "SD",
+               names_to = "SDCalcType") %>% 
+  mutate(CF = ifelse(SDCalcType == "MeanSD_outlined", MeanCF_outlined, MeanCF)) %>% 
+  filter(SDCalcType == "MeanSD_outlined")
+
 ## Correlation Matrix Zones ----
 
-ggplot(cor_matrix, aes(x = z, y = y, fill = cor_value)) +
-  geom_tile() +
+plot_corr_matrix_zones <- ggplot(cor_matrix) +
+  geom_tile(aes(x = z, y = y, fill = cor_value)) +
+  geom_hline(aes(yintercept = 40), color = "red") +
+  geom_hline(aes(yintercept = 80), color = "red") +
+  geom_vline(aes(xintercept = 40), color = "red") +
+  geom_vline(aes(xintercept = 80), color = "red") +
   scale_fill_viridis_c(option = "plasma") +
+  coord_fixed() +
   theme_minimal() +
   labs(x = "Zone ID", y = "Zone ID", fill = "Correlation") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 16),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 16))
+
+ggsave(filename = "Plots/plot_corr_matrix_zones.png", plot = plot_corr_matrix_zones, height = 10, width = 14, dpi = 300, units = "in")
 
 
 
@@ -698,8 +753,9 @@ plot_WPSS_All_density <- WPSS_ALL %>%
   theme_minimal() +
   theme(axis.title = element_blank(),
         axis.text.y = element_blank(),
-        legend.title = element_text(size = 26),
-        legend.text = element_text(size = 20))
+        legend.title = element_text(size = 30),
+        legend.text = element_text(size = 25),
+        axis.text.x = element_text(size = 18))
 
 ggsave(filename = "Plots/plot_WPSS_All_density.png", plot = plot_WPSS_All_density, height = 10, width = 20, dpi = 300, units = "in")
 
@@ -707,9 +763,30 @@ ggsave(filename = "Plots/plot_WPSS_All_density.png", plot = plot_WPSS_All_densit
 
 
 
+## CF density ----
+
+plot_CF_density <- cells_NEZ_clusters_df %>% 
+  ggplot() +
+  geom_density(aes(x = -CF_cells), linewidth = 2) +
+  theme_minimal() +
+  theme(axis.title = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 18))
+
+ggsave(filename = "Plots/plot_CF_density.png", plot = plot_CF_density, height = 10, width = 20, dpi = 300, units = "in")
+
+
+
+
 
 
 ## NVE ----
+
+pMVP = 0.5
+M = 20
+
+# get out polygons
+polygons <- get_polygons(pMVP = pMVP, M = M)
 
 # NVE Polygons data frame
 NVE_polygons <- NVE %>%
@@ -722,15 +799,42 @@ NVE_polygons <- NVE %>%
   select(-data) %>% 
   st_as_sf()
 
-cells_NEZ_clusters_df %>% 
+plot_NVE_M4_polygons <- cells_NEZ_clusters_df %>% 
   ggplot() +
   geom_raster(aes(x = X, y = Y), fill = "lightgrey", show.legend = FALSE) +
   geom_sf(data = NVE_polygons, fill = "yellow", color = "black", size = 1, alpha = 0.2) +
   geom_sf(data = polygons, fill = "green", color = "black", size = 1) + # color in other plots: #7393B3
+  #geom_text(aes(x = 100, y = 400, label = "C"), size = 8) + # change this depending on in which value of p
   coord_sf() +
   theme_minimal() +
   theme(axis.text = element_blank(),
-        axis.title = element_blank())
-  
+        axis.title = element_blank(),
+        panel.grid = element_blank())
+
+# save for different values of p
+ggsave(filename = "Plots/plot_NVE_M4_p05_M20.png", plot = plot_NVE_M4_polygons, height = 10, dpi = 300, units = "in")
+ggsave(filename = "Plots/plot_NVE_M4_p025_M20.png", plot = plot_NVE_M4_polygons, height = 10, dpi = 300, units = "in")  
+ggsave(filename = "Plots/plot_NVE_M4_p075_M20.png", plot = plot_NVE_M4_polygons, height = 10, dpi = 300, units = "in")
+
+# load all four plots as images
+plot_NVE_M4_polygons_p05_img <- grid::rasterGrob(png::readPNG("Plots/plot_NVE_M4_p05_M20.png"), interpolate = TRUE)
+plot_NVE_M4_polygons_p025_img <- grid::rasterGrob(png::readPNG("Plots/plot_NVE_M4_p025_M20.png"), interpolate = TRUE)
+plot_NVE_M4_polygons_p075_img <- grid::rasterGrob(png::readPNG("Plots/plot_NVE_M4_p075_M20.png"), interpolate = TRUE)
+
+# Arrange the plots in a grid without further resizing
+plot_NVE_M4_all <- grid.arrange(plot_NVE_M4_polygons_p05_img,
+                                       plot_NVE_M4_polygons_p025_img,
+                                       plot_NVE_M4_polygons_p075_img,
+                                       ncol = 3)
+
+ggsave(filename = "Plots/plot_NVE_M4_all.png", plot = plot_NVE_M4_all, height = 10, width = 17, dpi = 300)
 
 
+
+
+
+cor_matrix %>% 
+  filter(z %in% c(9,14,18,19)) %>% 
+  filter(y %in% c(9,14,18,19)) %>% 
+  filter(!z == y) %>% 
+  arrange(cor_value)

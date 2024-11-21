@@ -11,7 +11,13 @@ param COV{Z,Z}; # Covariance between Zones
 param CF{C}; # Capacity factor for cells
 
 param WPSS{C}; # Wind power suitability score for cells
+param WPSS_fish{C}; # Wind power suitability score for cells (fisherman)
+param WPSS_ecol{C}; # Wind power suitability score for cells (ecologist)
+param WPSS_inv{C}; # Wind power suitability score for cells (investor)
 param WPSS_min; # minimum WPSS score for selected cell
+param WPSS_min_fish; # minimum WPSS score for selected cell (fisherman)
+param WPSS_min_ecol; # minimum WPSS score for selected cell (ecologist)
+param WPSS_min_inv; # minimum WPSS score for selected cell (investor)
 
 param ZID{C}; # zone ID for cells
 param DistNW{C}; # distance to Norway for cells
@@ -81,8 +87,15 @@ linkuw2{z in Z}:
 	(w[z] = 0) ==> (u[z] = 0);
 
 # minimum WPSS
+##### Change depending on which score you want to use (base, fisherman, ecologist, investor
 minwpss{i in C}:
 	c[i] * WPSS[i] >= c[i] * WPSS_min;
+minwpss_fish{i in C}:
+	c[i] * WPSS_fish[i] >= c[i] * WPSS_min_fish;
+minwpss_ecol{i in C}:
+	c[i] * WPSS_ecol[i] >= c[i] * WPSS_min_ecol;
+minwpss_inv{i in C}:
+	c[i] * WPSS_inv[i] >= c[i] * WPSS_min_inv;
 	
 # minimum distance to Norway
 mindistnw{i in C}:

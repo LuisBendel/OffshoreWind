@@ -1,0 +1,9 @@
+CASE,WPSSCOnstraint,WeightMVP,WeightCF,n_locations,MeanSD,MeanCF
+CASE A1,Baseline,50,50,12,0.22,66
+CASE A2,Baseline,75,25,15,0.186,63
+CASE A3,Baseline,25,75,8,0.299,69.1
+CASE B1,Fisherman,50,50,15,0.221,66.2
+CASE B2,Ecologist,50,50,13,0.227,66.7
+CASE B3,Investor,50,50,14,0.223,65.9
+CASE C1,All WPSS,50,50,12,0.241,66.7
+CASE C2,All WPSS,75,25,18,0.197,63.5
