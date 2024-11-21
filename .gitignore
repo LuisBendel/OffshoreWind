@@ -3,4 +3,5 @@ data/processed/hourly_2019_clusters/
 data/raw/
 .Rhistory
 .Rproj.user/
+.Rproj
 data/out/EUCL_dist.csv
