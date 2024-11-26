@@ -653,15 +653,16 @@ ggsave(filename = "Plots/plot_zones_5pct_correlation_scatter.png", plot = plot_5
 plot_CF_map <- cells_NEZ_clusters_df %>% 
   ggplot() +
   geom_raster(aes(x = X, y = Y, fill = CF_cells^6)) +
-  geom_text(aes(x = 100, y = 400, label = "A"), size = 6) +
+  #geom_text(aes(x = 100, y = 400, label = "A"), size = 6) +
   coord_fixed() +
   scale_fill_gradientn(colors = c("lightgrey", "lightblue", "#7393B3", "darkblue")) +
   guides(fill = "none") +
   theme_minimal() +
   theme(axis.title = element_blank(),
-        axis.text = element_blank())
+        axis.text = element_blank(),
+        panel.grid = element_blank())
 
-ggsave(plot_CF_map, file = "plots/plot_CF_map.png", height = 1149/200,width = 652/200)
+ggsave(plot_CF_map, file = "Plots/plot_CF_map.png", height = 10, dpi = 300, units = "in")
 
 
 
@@ -671,13 +672,16 @@ plot_WPSS_map <- cells_NEZ_clusters_df %>%
   #filter(WPSS_NEZ >= 0.6386339) %>% 
   ggplot() +
   geom_raster(aes(x = X, y = Y, fill = WPSS_NEZ)) +
-  geom_text(aes(x = 100, y = 400, label = "B"), size = 6) +
+  #geom_text(aes(x = 100, y = 400, label = "B"), size = 6) +
   coord_fixed() +
   scale_fill_gradientn(colors = c("lightblue", "lightgreen", "darkgreen")) +
   guides(fill = "none") +
   theme_minimal() +
   theme(axis.title = element_blank(),
-        axis.text = element_blank())
+        axis.text = element_blank(),
+        panel.grid = element_blank())
+
+ggsave(plot_WPSS_map, file = "Plots/plot_WPSS_map.png", height = 10, dpi = 300, units = "in")
 
 
 
@@ -688,15 +692,16 @@ plot_WPSS_map_filtered <- cells_NEZ_clusters_df %>%
   filter(WPSS_NEZ >= 0.6386339) %>% 
   ggplot() +
   geom_raster(aes(x = X, y = Y, fill = WPSS_NEZ)) +
-  geom_text(aes(x = 100, y = 400, label = "C"), size = 6) +
+  #geom_text(aes(x = 100, y = 400, label = "C"), size = 6) +
   coord_fixed() +
   scale_fill_gradientn(colors = c("lightblue", "lightgreen", "darkgreen")) +
   guides(fill = "none") +
   theme_minimal() +
   theme(axis.title = element_blank(),
-        axis.text = element_blank())
+        axis.text = element_blank(),
+        panel.grid = element_blank())
 
-
+ggsave(plot_WPSS_map_filtered, file = "Plots/plot_WPSS_map_filtered.png", height = 10, dpi = 300, units = "in")
 
 
 
