@@ -3,3 +3,5 @@ ToDo: Readme.md file
 - Code includes more than what is presented in the thesis
 - describe all files
 - mention that model 3 in thesis is model 4 in ampl
+- include abstract
+- include acknowledgements
