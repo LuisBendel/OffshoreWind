@@ -1,6 +1,7 @@
 data/processed/hourly_2019_cells/
 data/processed/hourly_2019_clusters/
 data/raw/
+data/Sondre/
 .Rhistory
 .Rproj.user/
 OffshoreWind.Rproj

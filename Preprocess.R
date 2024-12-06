@@ -1,3 +1,6 @@
+###############################################################################-
+# This file is to preprocess the data to obtain the input for our Model
+###############################################################################-
 
 library(matrixStats) # for the rowMeans2 function
 library(reshape2) # for the melt() function

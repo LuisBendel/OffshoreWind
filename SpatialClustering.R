@@ -1,3 +1,6 @@
+###############################################################################-
+# This file is to cluster the grid cells into wind zones
+###############################################################################-
 
 library(tidyverse) # data wrangling
 library(viridis) # color palette

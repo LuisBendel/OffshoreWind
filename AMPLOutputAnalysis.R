@@ -1,3 +1,7 @@
+###############################################################################-
+# This file is to analyse the output from solving the model in AMPL
+###############################################################################-
+
 library(readr)
 library(tidyverse)
 library(viridis)
@@ -237,11 +241,11 @@ CASEA1 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_pareto.csv
 
 CASEA2 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_pareto.csv") %>% 
   mutate(p = round(p, 2)) %>% 
-  filter(p == 0.75)
+  filter(p == 0.25)
 
 CASEA3 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/model_4_out_pareto.csv") %>% 
   mutate(p = round(p, 2)) %>% 
-  filter(p == 0.25)
+  filter(p == 0.75)
 
 #### B
 CASEB1 <- read_csv("AMPL/Model 4 (MO, cell, included)/out/Fisherman/model_4_out_pareto_fish.csv") %>% 

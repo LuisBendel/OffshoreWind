@@ -1,3 +1,11 @@
+###############################################################################-
+# This file is to load the initial data and save it in a different format
+# The file loads monthly and hourly wind power data
+# and the monthly data for all cells within NEZ as separate .rds files
+# .rds files are NOT included in source control
+# To run this code, the user needs all data files described in the README
+# These are not necessarily included in the repo
+###############################################################################-
 
 library(matrixStats) # for rowmeans2 function
 library(ncdf4) # reading .nc files
@@ -102,7 +110,7 @@ ID2_df <- data.frame(
 
 
 
-## Combine ----
+## Combine Monthly----
 
 # combine both, X and Y coordinates, WPSS, and monthly power columns in one data frame
 monthly_NEZ <-

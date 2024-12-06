@@ -1,3 +1,6 @@
+###############################################################################-
+# This file is to visualize all results shown in the thesis (and more)
+###############################################################################-
 
 library(readr)
 library(tidyverse)
@@ -19,10 +22,6 @@ source("Functions.R")
 
 ## RULES FOR PLOTTING ----
 # naming: plot_....png
-# axis title size: 14
-# axis text size: 12
-# legend title size: 16
-# legend text size: 14
 # ggsave height: 10
 # ggsave width: adjust accordingly
 # ggsave dpi: 300
@@ -157,7 +156,7 @@ ggsave("Plots/plot_150zones_grid.png", plot = plot_all_zones_grid, width = 14, h
 
 ## Selected Zones ----
 # MODEL 2
-pMVP <- 0.8
+pMVP <- 0.5
 M <- 20
 
 M2_selected_zones <- model_2_out_weights %>% 
@@ -239,7 +238,7 @@ plot_M4 <- cells_NEZ_clusters_df %>%
   theme_minimal() +
   guides(fill = "none") +
   coord_fixed() +
-  geom_text(data = M4_cluster_centroids_selected, aes(label = cluster_KM), color = "black", size = 4) +
+  #geom_text(data = M4_cluster_centroids_selected, aes(label = cluster_KM), color = "black", size = 4) +
   #geom_point(data = M4_cells_coord_selected, aes(x = X, y = Y), color = "red", size = 2) +
   labs(title = "Selected Zones Model 4",
        subtitle = paste0(pMVP, " * MVP + ", 1-pMVP, " * MCF , Maxfarms = ", M))
@@ -330,14 +329,14 @@ plot_M4_polygons <- ggplot(cells_NEZ_clusters_df) +
   #geom_segment(data = zones_arrow_df, aes(x = X_start, y = Y_start, xend = X_end, yend = Y_end), color = "black", linewidth = 0.2) +
   # Add text labels for the zone IDs
   #geom_text(data = zones_arrow_df, aes(x = X_end, y = Y_end, label = zone), hjust = 0, vjust = 0.5, size = 5) +
-  geom_text(aes(x = 100, y = 400, label = "A"), size = 8) + # change this depending on in which grid you use it
+  #geom_text(aes(x = 100, y = 400, label = "A"), size = 8) + # change this depending on in which grid you use it
   #xlim(c(0, 800)) +
   labs(x = "", y = "") +
   theme_minimal() +
   theme(axis.text = element_blank(),
         panel.grid = element_blank())
 
-ggsave(filename = "Plots/plot_M4_polygons_p05_M20_fish_NoNumbers.png", plot = plot_M4_polygons, width = 10, height = 12, dpi = 300, units = "in")
+ggsave(filename = "Plots/plot_M4_polygons_p05_M20_inv_ToCombine.png", plot = plot_M4_polygons, height = 10, dpi = 300, units = "in")
 
 
 # With different personas without numbers in one plot grid
@@ -433,7 +432,7 @@ plot_M4_zones <- cells_NEZ_clusters_df %>%
   mutate(selected = ifelse(cluster_KM %in% zones, 1, 0)) %>% 
   ggplot(aes(x = X, y = Y)) +
   geom_raster(aes(fill = as.factor(selected))) +
-  geom_text(aes(x = 100, y = 400, label = "A"), size = 8) + # change this depending on in which grid you use it
+  #geom_text(aes(x = 100, y = 400, label = "A"), size = 8) + # change this depending on in which grid you use it
   scale_fill_manual(values = c("lightgrey", "#7393B3")) +
   theme_minimal() +
   guides(fill = "none") +
@@ -442,19 +441,19 @@ plot_M4_zones <- cells_NEZ_clusters_df %>%
         axis.text = element_blank(),
         panel.grid = element_blank())
 
-ggsave(filename = "Plots/plot_M4_Zones.png", plot = plot_M4_zones, height = 10, dpi = 300, units = "in")
+ggsave(filename = "Plots/plot_M4_ProcessToPolygons_A.png", plot = plot_M4_zones, height = 10, width = 5.19, dpi = 300, units = "in")
 
 
 plot_M4_polygons_noArrows <- ggplot(cells_NEZ_clusters_df) +
   geom_raster(aes(x = X, y = Y), show.legend = FALSE, fill = "lightgrey") +
   geom_sf(data = polygons, fill = "#7393B3", color = "black", size = 1) +
-  geom_text(aes(x = 100, y = 400, label = "D"), size = 8) + # change this depending on in which grid you use it
+  #geom_text(aes(x = 100, y = 400, label = "D"), size = 8) + # change this depending on in which grid you use it
   theme_minimal() +
   theme(axis.text = element_blank(),
         axis.title = element_blank(),
         panel.grid = element_blank())
 
-ggsave(filename = "Plots/plot_M4_Polygons.png", plot = plot_M4_polygons_noArrows, height = 10, dpi = 300, units = "in")
+ggsave(filename = "Plots/plot_M4_ProcessToPolygons_D.png", plot = plot_M4_polygons_noArrows, height = 10, width = 5.19, dpi = 300, units = "in")
 
 # plot on zone with only selected cells
 M4_ZONE_selected_cells <- model_4_out_weights %>% 
@@ -466,7 +465,7 @@ plot_M4_OneZone <- cells_NEZ_clusters_df %>%
   mutate(selected = ifelse(ID %in% M4_ZONE_selected_cells, 1, 0)) %>% #M4_ZONE_selected_cells
   ggplot() +
   geom_raster(aes(x = X, y = Y, fill = as.factor(selected))) +
-  geom_text(aes(x = 225, y = 535, label = "B"), size = 8) + # change this depending on in which grid you use it
+  #geom_text(aes(x = 225, y = 535, label = "B"), size = 8) + # change this depending on in which grid you use it
   scale_fill_manual(values = c("lightgrey", "#7393B3")) +
   coord_fixed() +
   theme_minimal() +
@@ -475,7 +474,7 @@ plot_M4_OneZone <- cells_NEZ_clusters_df %>%
         axis.text = element_blank(),
         panel.grid = element_blank())
 
-ggsave(filename = "Plots/plot_M4_Zone41.png", plot = plot_M4_OneZone, height = 10, dpi = 300, units = "in")
+ggsave(filename = "Plots/plot_M4_ProcessToPolygons_B.png", plot = plot_M4_OneZone, height = 10, width = 5.19, dpi = 300, units = "in")
 
 # plot one zone with Polygon on top
 plot_M4_OneZone_polygon <- cells_NEZ_clusters_df %>% 
@@ -485,7 +484,7 @@ plot_M4_OneZone_polygon <- cells_NEZ_clusters_df %>%
   geom_raster(aes(x = X, y = Y, fill = as.factor(selected))) +
   scale_fill_manual(values = c("lightgrey", "#7393B3")) +
   geom_sf(data = polygon_zone, fill = "#7393B3", color = "black", size = 1, alpha = 0.6) +
-  geom_text(aes(x = 225, y = 535, label = "C"), size = 8) + # change this depending on in which grid you use it
+  #geom_text(aes(x = 225, y = 535, label = "C"), size = 8) + # change this depending on in which grid you use it
   coord_sf() +
   theme_minimal() +
   guides(fill = "none") + 
@@ -495,7 +494,7 @@ plot_M4_OneZone_polygon <- cells_NEZ_clusters_df %>%
         legend.text = element_text(size = 16),
         panel.grid = element_blank())
 
-ggsave(filename = "Plots/plot_M4_Zone41_Polygon.png", plot = plot_M4_OneZone_polygon, height = 10, dpi = 300, units = "in")
+ggsave(filename = "Plots/plot_M4_ProcessToPolygons_C.png", plot = plot_M4_OneZone_polygon, height = 10, width = 5.19, dpi = 300, units = "in")
 
 # load all four plots as images
 plot_M4_zones_img <- grid::rasterGrob(png::readPNG("Plots/plot_M4_zones.png"), interpolate = TRUE)
@@ -546,19 +545,23 @@ model_3_out_pareto %>%
 M <- 20
 
 points_df <- model_4_out_pareto %>% 
-  filter(maxfarms == M, p == 0.5) 
+  filter(maxfarms == M, p %in%  c(0.25, 0.5, 0.75)) 
 
 plot_M4_20Farms_pareto <- model_4_out_pareto %>% 
   filter(maxfarms == M) %>% 
   ggplot() +
   geom_line(aes(x = MeanSD, y = -MeanCF)) +
   geom_point(aes(x = MeanSD, y = -MeanCF), data = points_df, size = 6, color = "blue") +
-  geom_text(aes(x = MeanSD + 0.025, y = -MeanCF, label = "50/50 Weighting of CF/Variance"), data = points_df, size = 6) +
+  geom_text(aes(x = MeanSD + c(-0.03, 0.03, 0.03), y = -MeanCF,
+                label = c("CASE A2: 25/75 Weighting of Variance/CF",
+                          "CASE A1: 50/50 Weighting of Variance/CF",
+                          "CASE A3: 75/25 Weighting of Variance/CF")),
+            data = points_df, size = 6) +
   theme_minimal() +
   labs(y = "Mean Capacity Factor",
        x = "Mean Standard Deviation") +
   theme(axis.title = element_text(size = 24),
-        axis.text = element_text(size = 20))
+        axis.text = element_text(size = 24))
   
 ggsave(filename = "Plots/plot_M4_20Farms_pareto.png", plot = plot_M4_20Farms_pareto, height = 10, width = 15, dpi = 300, units = "in")
 
@@ -638,9 +641,9 @@ plot_5pct_corr <- cor_within_all_zones %>%
        x = "Mean Distance To Norway",
        y = "5th Percentile Correlation") +
   theme(
-    axis.title.x = element_text(size = 16),
-    axis.title.y = element_text(size = 16),
-    axis.text = element_text(size = 14)
+    axis.title.x = element_text(size = 24),
+    axis.title.y = element_text(size = 24),
+    axis.text = element_text(size = 24)
   ) +
   guides(color = "none")
 
@@ -756,11 +759,11 @@ plot_WPSS_All_density <- WPSS_ALL %>%
   geom_density(aes(x = WPSS, color = Persona), linewidth = 2) +
   scale_color_discrete(labels = custom_labels) +
   theme_minimal() +
-  theme(axis.title = element_blank(),
-        axis.text.y = element_blank(),
+  labs(x = "WPSS") +
+  theme(axis.title = element_text(size = 24),
         legend.title = element_text(size = 30),
-        legend.text = element_text(size = 25),
-        axis.text.x = element_text(size = 18))
+        legend.text = element_text(size = 24),
+        axis.text = element_text(size = 24))
 
 ggsave(filename = "Plots/plot_WPSS_All_density.png", plot = plot_WPSS_All_density, height = 10, width = 20, dpi = 300, units = "in")
 
@@ -774,9 +777,9 @@ plot_CF_density <- cells_NEZ_clusters_df %>%
   ggplot() +
   geom_density(aes(x = -CF_cells), linewidth = 2) +
   theme_minimal() +
-  theme(axis.title = element_blank(),
-        axis.text.y = element_blank(),
-        axis.text.x = element_text(size = 18))
+  labs(x = "Capacity Factor") +
+  theme(axis.title = element_text(size = 24),
+        axis.text = element_text(size = 24))
 
 ggsave(filename = "Plots/plot_CF_density.png", plot = plot_CF_density, height = 10, width = 20, dpi = 300, units = "in")
 
@@ -804,12 +807,34 @@ NVE_polygons <- NVE %>%
   select(-data) %>% 
   st_as_sf()
 
+# shapes of circles aroung the NVE regions
+NVE_regions <- data.frame(
+  X = c(400, 355, 270, 205, 150),   
+  Y = c(470, 410, 505, 680, 1000),   
+  label = c("Sønnavind (S)", "Sørvest (SV)", "Vestavind (VV)", "Nordvest (NV)", "Nordavind (N)"),
+  X_label = c(420, 420, 420, 420, 420),
+  Y_label = c(550, 410, 700, 850, 1000),
+  a = c(35, 50, 30, 40, 120),          # Semi-major axis for each ellipse
+  b = c(15, 40, 80, 100, 40),          # Semi-minor axis for each ellipse
+  angle = c(pi/3, 0, pi/3.5, pi/8, pi/3) # Angle of rotation (in radians) for each ellipse
+)
+
 plot_NVE_M4_polygons <- cells_NEZ_clusters_df %>% 
   ggplot() +
   geom_raster(aes(x = X, y = Y), fill = "lightgrey", show.legend = FALSE) +
   geom_sf(data = NVE_polygons, fill = "yellow", color = "black", size = 1, alpha = 0.2) +
   geom_sf(data = polygons, fill = "green", color = "black", size = 1) + # color in other plots: #7393B3
   #geom_text(aes(x = 100, y = 400, label = "C"), size = 8) + # change this depending on in which value of p
+  # Add circles/ovals with variable sizes and shapes
+  geom_ellipse(data = NVE_regions, aes(x0 = X, y0 = Y, a = a, b = b, angle = angle), 
+               fill = "blue", alpha = 0.05, color = "black") +
+  # Add connecting lines from shape center to label
+  geom_segment(data = NVE_regions, aes(x = X, y = Y, xend = X_label, yend = Y_label), 
+               color = "black", linewidth = 0.5) +
+  # Add text labels for the locations
+  geom_text(data = NVE_regions, aes(x = X_label, y = Y_label, label = label), 
+            hjust = 0, vjust = 0.5, size = 8) +
+  xlim(c(0, 800)) +
   coord_sf() +
   theme_minimal() +
   theme(axis.text = element_blank(),
@@ -817,7 +842,7 @@ plot_NVE_M4_polygons <- cells_NEZ_clusters_df %>%
         panel.grid = element_blank())
 
 # save for different values of p
-ggsave(filename = "Plots/plot_NVE_M4_p05_M20.png", plot = plot_NVE_M4_polygons, height = 10, dpi = 300, units = "in")
+ggsave(filename = "Plots/plot_NVE_M4_p05_M20.png", plot = plot_NVE_M4_polygons, height = 10, width = 10, dpi = 300, units = "in")
 ggsave(filename = "Plots/plot_NVE_M4_p025_M20.png", plot = plot_NVE_M4_polygons, height = 10, dpi = 300, units = "in")  
 ggsave(filename = "Plots/plot_NVE_M4_p075_M20.png", plot = plot_NVE_M4_polygons, height = 10, dpi = 300, units = "in")
 
@@ -836,7 +861,7 @@ ggsave(filename = "Plots/plot_NVE_M4_all.png", plot = plot_NVE_M4_all, height = 
 
 
 
-
+## Adjacent Zone Correlation ----
 
 cor_matrix %>% 
   filter(z %in% c(9,14,18,19)) %>% 

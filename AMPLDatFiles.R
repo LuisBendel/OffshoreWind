@@ -1,3 +1,8 @@
+###############################################################################-
+# This file is to automatically create the .dat files
+# The files are needed in AMPL following the AMPL syntax for parameter definition
+###############################################################################-
+
 library(readr)
 
 cov_matrix <- read_csv("data/out/cov_matrix.csv")
