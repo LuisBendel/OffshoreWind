@@ -40,7 +40,6 @@ var w{Z} >= 0; # weight on zones
 var u{Z} binary; # binary variable if zone is selected
 var c{C} binary; # binary variable if cell is selected
 var k{Z} integer; # auxiliary variable to enforce multiples of zone weights
-var l{Z} integer; # auxiliary variable to enforce multiples of cell weights
 
 
 
