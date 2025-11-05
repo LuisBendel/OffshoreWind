@@ -790,7 +790,7 @@ ggsave(filename = "Plots/plot_CF_density.png", plot = plot_CF_density, height = 
 
 ## NVE ----
 
-pMVP = 0.5
+pMVP = 0.75
 M = 20
 
 # get out polygons
